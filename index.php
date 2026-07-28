@@ -5,6 +5,20 @@
    ═══════════════════════════════════════════════════════════ */
 session_start();
 
+// Serve public assets directly from PHP when Vercel static routing misses them
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$publicRoot = realpath(__DIR__ . '/public');
+if ($publicRoot && $uri && preg_match('#^/([^/]+\.(?:png|svg|jpg|jpeg|ico|webp|pdf))$#i', $uri)) {
+    $assetPath = realpath($publicRoot . $uri);
+    if ($assetPath && strpos($assetPath, $publicRoot) === 0 && is_file($assetPath)) {
+        $mime = mime_content_type($assetPath) ?: 'application/octet-stream';
+        header('Content-Type: ' . $mime);
+        header('Cache-Control: public, max-age=31536000, immutable');
+        readfile($assetPath);
+        exit;
+    }
+}
+
 // Adaptive: local XAMPP uses ./data/, Vercel uses /tmp/
 $baseDir = __DIR__;
 $dataDir = is_writable($baseDir) ? $baseDir . '/data/' : '/tmp/hph-data/';
