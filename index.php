@@ -282,6 +282,11 @@ $logged = isset($_SESSION['admin']);
   $previewImage = $protocol . '://' . $host . '/person.png';
   $siteTitle = htmlspecialchars($p['name']) . ' — World-Class Portfolio';
   $siteDescription = htmlspecialchars($p['title']) . ' based in ' . htmlspecialchars($p['location']);
+  $avatarDataUri = '';
+  $avatarPath = __DIR__ . '/public/person.png';
+  if (file_exists($avatarPath)) {
+      $avatarDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($avatarPath));
+  }
 ?>
 <meta property="og:type" content="website">
 <meta property="og:title" content="<?= $siteTitle ?>">
@@ -1562,9 +1567,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       <div class="reveal">
         <div class="glass-card" style="padding:32px;text-align:center">
           <div class="about-avatar-wrap">
-            <div class="about-avatar" style="background-image: url('/person.png'), radial-gradient(circle at 30% 20%, rgba(99,102,241,0.9), rgba(34,211,238,0.85));">
-              <span class="avatar-initials">HA</span>
-            </div>
+            <img src="<?= htmlspecialchars($avatarDataUri ?: '/person.png', ENT_QUOTES) ?>" alt="Hammad Ali" class="about-avatar">
           </div>
           <div class="about-name" id="about-name"><?= htmlspecialchars($p['name']) ?></div>
           <div class="about-role"><?= htmlspecialchars($p['subtitle']) ?></div>
