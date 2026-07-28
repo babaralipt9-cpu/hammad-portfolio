@@ -10,6 +10,10 @@
       "status": 403
     },
     {
+      "src": "^/([^/]+\\.(?:png|svg|jpg|jpeg|ico|webp|pdf))$",
+      "dest": "/public/$1"
+    },
+    {
       "src": "^/public/(.*)",
       "dest": "/public/$1"
     },
