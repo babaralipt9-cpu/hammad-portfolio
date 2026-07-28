@@ -5,20 +5,6 @@
    ═══════════════════════════════════════════════════════════ */
 session_start();
 
-// Serve public assets directly from PHP when Vercel static routing misses them
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$publicRoot = realpath(__DIR__ . '/public');
-if ($publicRoot && $uri && preg_match('#^/([^/]+\.(?:png|svg|jpg|jpeg|ico|webp|pdf))$#i', $uri)) {
-    $assetPath = realpath($publicRoot . $uri);
-    if ($assetPath && strpos($assetPath, $publicRoot) === 0 && is_file($assetPath)) {
-        $mime = mime_content_type($assetPath) ?: 'application/octet-stream';
-        header('Content-Type: ' . $mime);
-        header('Cache-Control: public, max-age=31536000, immutable');
-        readfile($assetPath);
-        exit;
-    }
-}
-
 // Adaptive: local XAMPP uses ./data/, Vercel uses /tmp/
 $baseDir = __DIR__;
 $dataDir = is_writable($baseDir) ? $baseDir . '/data/' : '/tmp/hph-data/';
@@ -1683,9 +1669,6 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       ?>
       <div class="glass-card proj-card reveal">
         <div class="proj-thumb">
-          <?php if ($img): ?>
-          <img class="proj-thumb-img" src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($pj['title']) ?> screenshot">
-          <?php endif; ?>
           <div class="proj-thumb-bg"><?= $pj['emoji'] ?></div>
           <div class="proj-thumb-overlay"></div>
           <span class="proj-thumb-icon"><?= $pj['emoji'] ?></span>
