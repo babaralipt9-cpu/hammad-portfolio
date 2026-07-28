@@ -1644,12 +1644,8 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       ?>
       <div class="glass-card proj-card reveal">
         <div class="proj-thumb">
-          <?php if (!empty($img)): ?>
-          <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($pj['title']) ?> UI" class="proj-thumb-img">
-          <div class="proj-thumb-overlay"></div>
-          <?php else: ?>
           <div class="proj-thumb-bg"><?= $pj['emoji'] ?></div>
-          <?php endif; ?>
+          <div class="proj-thumb-overlay"></div>
           <span class="proj-thumb-icon"><?= $pj['emoji'] ?></span>
           <span class="proj-status <?= strtolower($pj['status'])==='delivered'?'delivered':'' ?>"><?= htmlspecialchars($pj['status']) ?></span>
         </div>
