@@ -10,8 +10,8 @@
       "status": 403
     },
     {
-      "src": "^/Public/(.*)",
-      "dest": "/Public/$1"
+      "src": "^/public/(.*)",
+      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",
@@ -29,3 +29,4 @@
     }
   ]
 }
+
