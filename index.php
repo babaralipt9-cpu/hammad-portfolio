@@ -54,9 +54,9 @@ if (!file_exists(PF)) {
             ['id'=>'e7','company'=>'JKSM – Pepsi Cola Bottlers Multan','role'=>'Production Supervisor','period'=>'Apr 2019 – May 2024','location'=>'Multan, Pakistan','description'=>'Supervised production branch employees at one of Pakistan\'s largest beverage bottling operations. Built operational discipline and team management skills.','tags'=>['Operations','Team Leadership','Quality Control']],
         ],
         'projects' => [
-            ['id'=>'p1','title'=>'Deenhub','description'=>'A comprehensive Islamic content platform featuring articles, resources, and community-driven knowledge. Built for the Muslim community worldwide with a focus on authentic content and clean user experience.','url'=>'https://www.deenhub.info','tags'=>['Web Dev','Content Platform','SEO'],'status'=>'Live','emoji'=>'🌙','image'=>'/public/deenhub.png'],
-            ['id'=>'p2','title'=>'Aqualift Store','description'=>'Professional e-commerce storefront with custom product catalog, streamlined checkout, and conversion-optimized design. Integrated Meta Ads for performance marketing and measurable ROI.','url'=>'https://www.aqualift.store','tags'=>['E-Commerce','Shopify','Meta Ads','CRO'],'status'=>'Live','emoji'=>'💧','image'=>'/public/Aqualift.png'],
-            ['id'=>'p3','title'=>'Sulaiman Enterprises','description'=>'Premium construction and interior design company website with navy/copper brand identity, scroll-triggered animations, lead capture forms, project galleries, and animated testimonials. Delivered as a full business website.','url'=>'#','tags'=>['HTML/CSS','JavaScript','Lead Gen','Branding'],'status'=>'Delivered','emoji'=>'🏗️','image'=>'/public/Sulaiman.png'],
+            ['id'=>'p1','title'=>'Deenhub','description'=>'A comprehensive Islamic content platform featuring articles, resources, and community-driven knowledge. Built for the Muslim community worldwide with a focus on authentic content and clean user experience.','url'=>'https://www.deenhub.info','tags'=>['Web Dev','Content Platform','SEO'],'status'=>'Live','emoji'=>'🌙','image'=>'/deenhub.png'],
+            ['id'=>'p2','title'=>'Aqualift Store','description'=>'Professional e-commerce storefront with custom product catalog, streamlined checkout, and conversion-optimized design. Integrated Meta Ads for performance marketing and measurable ROI.','url'=>'https://www.aqualift.store','tags'=>['E-Commerce','Shopify','Meta Ads','CRO'],'status'=>'Live','emoji'=>'💧','image'=>'/Aqualift.png'],
+            ['id'=>'p3','title'=>'Sulaiman Enterprises','description'=>'Premium construction and interior design company website with navy/copper brand identity, scroll-triggered animations, lead capture forms, project galleries, and animated testimonials. Delivered as a full business website.','url'=>'#','tags'=>['HTML/CSS','JavaScript','Lead Gen','Branding'],'status'=>'Delivered','emoji'=>'🏗️','image'=>'/Sulaiman.png'],
         ],
         'skills' => [
             ['category'=>'Sales & SDR','color'=>'#6366F1','items'=>['Cold Calling','Email Outreach','Lead Qualification','BANT Framework','HubSpot','GHL','Apollo','AirTable','B2B Prospecting','Pipeline Management','Salesforce','CRM Management']],
@@ -279,7 +279,7 @@ $logged = isset($_SESSION['admin']);
   $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
   $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
   $pageUrl = $protocol . '://' . $host . ($_SERVER['REQUEST_URI'] ?? '/');
-  $previewImage = $protocol . '://' . $host . '/public/person.png';
+  $previewImage = $protocol . '://' . $host . '/person.png';
   $siteTitle = htmlspecialchars($p['name']) . ' — World-Class Portfolio';
   $siteDescription = htmlspecialchars($p['title']) . ' based in ' . htmlspecialchars($p['location']);
 ?>
@@ -294,7 +294,7 @@ $logged = isset($_SESSION['admin']);
 <meta name="twitter:description" content="<?= $siteDescription ?>">
 <meta name="twitter:image" content="<?= htmlspecialchars($previewImage) ?>">
 <meta name="twitter:image:alt" content="<?= htmlspecialchars($p['name']) ?> profile picture">
-<link rel="icon" type="image/svg+xml" href="/public/gemini-svg.svg">
+<link rel="icon" type="image/svg+xml" href="/gemini-svg.svg">
 
 <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1509,7 +1509,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
         <div class="hero-btns">
           <a href="#projects" class="btn btn-primary">Explore My Work →</a>
           <a href="#contact" class="btn btn-outline">Get In Touch</a>
-          <a href="/public/resume.pdf" class="btn btn-ghost" download>Resume 📄</a>
+          <a href="/resume.pdf" class="btn btn-ghost" download>Resume 📄</a>
         </div>
         <div class="hero-stats">
           <?php foreach ($p['stats'] as $s): ?>
@@ -1552,7 +1552,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       <div class="reveal">
         <div class="glass-card" style="padding:32px;text-align:center">
           <div class="about-avatar-wrap">
-            <img src="/public/person.png" alt="Hammad Ali" class="about-avatar">
+            <img src="/person.png" alt="Hammad Ali" class="about-avatar">
           </div>
           <div class="about-name" id="about-name"><?= htmlspecialchars($p['name']) ?></div>
           <div class="about-role"><?= htmlspecialchars($p['subtitle']) ?></div>
@@ -1638,9 +1638,9 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
     <div class="proj-grid" id="proj-list">
       <?php foreach ($prj as $i => $pj):
         $img = $pj['image'] ?? '';
-        if (!$img && strtolower($pj['title']) === 'deenhub') $img = '/public/deenhub.png';
-        if (!$img && (strtolower($pj['title']) === 'aqualift store' || strtolower($pj['title']) === 'aqualift')) $img = '/public/Aqualift.png';
-        if (!$img && (strtolower(explode(' ', $pj['title'])[0]) === 'sulaiman')) $img = '/public/Sulaiman.png';
+        if (!$img && strtolower($pj['title']) === 'deenhub') $img = '/deenhub.png';
+        if (!$img && (strtolower($pj['title']) === 'aqualift store' || strtolower($pj['title']) === 'aqualift')) $img = '/Aqualift.png';
+        if (!$img && (strtolower(explode(' ', $pj['title'])[0]) === 'sulaiman')) $img = '/Sulaiman.png';
       ?>
       <div class="glass-card proj-card reveal">
         <div class="proj-thumb">
