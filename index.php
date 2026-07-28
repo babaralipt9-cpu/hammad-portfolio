@@ -2048,17 +2048,21 @@ const html       = document.documentElement;
 const themeBtn   = document.getElementById('theme-btn');
 const savedTheme = localStorage.getItem('theme') || 'dark';
 html.setAttribute('data-theme', savedTheme);
-themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+if (themeBtn) {
+  themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+}
 
 function toggleTheme() {
   const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', t);
   localStorage.setItem('theme', t);
-  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
-  themeBtn.style.transform = 'rotate(360deg)';
-  setTimeout(() => themeBtn.style.transform = '', 400);
+  if (themeBtn) {
+    themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    themeBtn.style.transform = 'rotate(360deg)';
+    setTimeout(() => themeBtn.style.transform = '', 400);
+  }
 }
-themeBtn.addEventListener('click', toggleTheme);
+if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
 /* ── Scroll Progress Line & Back to Top ──────────────── */
 const progressBar = document.getElementById('scroll-progress');
