@@ -1126,18 +1126,18 @@ textarea.form-input { resize: vertical; min-height: 100px; }
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  opacity: 0.65;
+  opacity: 0.72;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
   z-index: 0;
 }
 .proj-card:hover .proj-thumb-img {
-  transform: scale(1.1);
-  opacity: 0.9;
+  transform: scale(1.08);
+  opacity: 0.95;
 }
 .proj-thumb-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(7, 10, 20, 0.25) 0%, rgba(7, 10, 20, 0.75) 100%);
+  background: linear-gradient(180deg, rgba(7, 10, 20, 0.25) 0%, rgba(7, 10, 20, 0.78) 100%);
   z-index: 1;
 }
 .proj-thumb-icon {
@@ -1145,7 +1145,8 @@ textarea.form-input { resize: vertical; min-height: 100px; }
   z-index: 2;
   font-size: 40px;
   filter: drop-shadow(0 4px 14px rgba(0,0,0,0.6));
-  transition: transform 0.4s ease;
+  transition: transform 0.4s ease, color 0.4s ease;
+  color: #fff;
 }
 .proj-card:hover .proj-thumb-icon {
   transform: scale(1.15) rotate(5deg);
@@ -1668,6 +1669,9 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       ?>
       <div class="glass-card proj-card reveal">
         <div class="proj-thumb">
+          <?php if ($img): ?>
+          <img class="proj-thumb-img" src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($pj['title']) ?> screenshot">
+          <?php endif; ?>
           <div class="proj-thumb-bg"><?= $pj['emoji'] ?></div>
           <div class="proj-thumb-overlay"></div>
           <span class="proj-thumb-icon"><?= $pj['emoji'] ?></span>
