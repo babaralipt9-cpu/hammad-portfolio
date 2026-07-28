@@ -273,7 +273,7 @@ $logged = isset($_SESSION['admin']);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= htmlspecialchars($p['name']) ?> — World-Class Portfolio</title>
 <meta name="description" content="<?= htmlspecialchars($p['title']) ?> based in <?= htmlspecialchars($p['location']) ?>">
-<link rel="icon" type="image/svg+xml" href="/Public/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="/Public/gemini-svg.svg">
 
 <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
