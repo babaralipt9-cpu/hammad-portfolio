@@ -1575,7 +1575,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
         <div class="glass-card" style="padding:32px;text-align:center">
           <div class="about-avatar-wrap">
             <div class="about-avatar" style="background-image: url('<?= htmlspecialchars($avatarDataUri ?: '/person.png', ENT_QUOTES) ?>'), radial-gradient(circle at 30% 20%, rgba(99,102,241,0.9), rgba(34,211,238,0.85));">
-              <span class="avatar-initials">HA</span>
+              <span class="avatar-initials"></span>
             </div>
           </div>
           <div class="about-name" id="about-name"><?= htmlspecialchars($p['name']) ?></div>
