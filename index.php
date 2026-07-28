@@ -287,6 +287,11 @@ $logged = isset($_SESSION['admin']);
   if (file_exists($avatarPath)) {
       $avatarDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($avatarPath));
   }
+  $avatarDataUri = '';
+  $avatarPath = __DIR__ . '/public/person.png';
+  if (file_exists($avatarPath)) {
+      $avatarDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($avatarPath));
+  }
 ?>
 <meta property="og:type" content="website">
 <meta property="og:title" content="<?= $siteTitle ?>">
@@ -1008,12 +1013,14 @@ textarea.form-input { resize: vertical; min-height: 100px; }
   border: 4px solid var(--bg2);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: 800;
   font-size: 14px;
+  background-color: #0f172a;
 }
 
 .avatar-initials { position: relative; z-index: 2; }
@@ -1567,7 +1574,9 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       <div class="reveal">
         <div class="glass-card" style="padding:32px;text-align:center">
           <div class="about-avatar-wrap">
-            <img src="<?= htmlspecialchars($avatarDataUri ?: '/person.png', ENT_QUOTES) ?>" alt="Hammad Ali" class="about-avatar">
+            <div class="about-avatar" style="background-image: url('<?= htmlspecialchars($avatarDataUri ?: '/person.png', ENT_QUOTES) ?>'), radial-gradient(circle at 30% 20%, rgba(99,102,241,0.9), rgba(34,211,238,0.85));">
+              <span class="avatar-initials">HA</span>
+            </div>
           </div>
           <div class="about-name" id="about-name"><?= htmlspecialchars($p['name']) ?></div>
           <div class="about-role"><?= htmlspecialchars($p['subtitle']) ?></div>
