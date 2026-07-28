@@ -6,7 +6,9 @@
 session_start();
 
 // Adaptive: local XAMPP uses ./data/, Vercel uses /tmp/
-define('DATA_DIR', (is_writable(__DIR__) || is_dir(__DIR__ . '/data/')) ? __DIR__ . '/data/' : '/tmp/hph-data/');
+$baseDir = __DIR__;
+$dataDir = is_writable($baseDir) ? $baseDir . '/data/' : '/tmp/hph-data/';
+define('DATA_DIR', $dataDir);
 define('PF',  DATA_DIR . 'portfolio.json');
 define('ADM', DATA_DIR . 'admin.json');
 define('LDS', DATA_DIR . 'leads.json');
