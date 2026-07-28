@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html la
+g="e
+" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta 
+ame="viewport" co
+te
+t="width=device-width, i
+itial-scale=1.0">
+<title>Hammad Ali — World-Class Portfolio</title>
+<meta 
+ame="descriptio
+" co
+te
+t="SDO/SDR Specialist &amp; Fro
+t-E
+d Developer based i
+ Multa
+, Pakista
+">
+<meta property="og:type" co
+te
+t="website">
+<meta property="og:title" co
+te
+t="Hammad Ali — World-Class Portfolio">
+<meta property="og:descriptio
+" co
+te
+t="SDO/SDR Specialist &amp; Fro
+t-E
+d Developer based i
+ Multa
+, Pakista
+">
+<meta property="og:url" co
+te
+t="http://hammad-portfolio-phi.vercel.app/">
+<meta property="og:image" co
+te
+t="http://hammad-portfolio-phi.vercel.app/public/perso
+.p
+g">
+<meta property="og:image:alt" co
+te
+t="Hammad Ali profile picture">
+<meta 
+ame="twitter:card" co
+te
+t="summary_large_image">
+<meta 
+ame="twitter:title" co
+te
+t="Hammad Ali — World-Class Portfolio">
+<meta 
+ame="twitter:descriptio
+" co
+te
+t="SDO/SDR Specialist &amp; Fro
+t-E
+d Developer based i
+ Multa
+, Pakista
+">
+<meta 
+ame="twitter:image" co
+te
+t="http://hammad-portfolio-phi.vercel.app/public/perso
+.p
+g">
+<meta 
+ame="twitter:image:alt" co
+te
+t="Hammad Ali profile picture">
+<li
+k rel="ico
+" type="image/svg+xml" href="/public/gemi
