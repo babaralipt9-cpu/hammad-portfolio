@@ -294,7 +294,7 @@ $logged = isset($_SESSION['admin']);
 <meta name="twitter:description" content="<?= $siteDescription ?>">
 <meta name="twitter:image" content="<?= htmlspecialchars($previewImage) ?>">
 <meta name="twitter:image:alt" content="<?= htmlspecialchars($p['name']) ?> profile picture">
-<link rel="icon" type="image/svg+xml" href="/gemini-svg.svg">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4NCiAgPGRlZnM+DQogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4NCiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2MzY2RjEiIC8+DQogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyMkQzRUUiIC8+DQogICAgPC9saW5lYXJHcmFkaWVudD4NCiAgPC9kZWZzPg0KICA8cmVjdCB4PSIxNSIgeT0iMTUiIHdpZHRoPSI0ODIiIGhlaWdodD0iNDgyIiByeD0iMTEwIiBmaWxsPSJ1cmwoI2dyYWQpIiAvPg0KICA8cmVjdCB4PSIxNDAiIHk9IjEzMCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjI1MiIgcng9IjE1IiBmaWxsPSIjRkZGRkZGIiAvPg0KICA8cmVjdCB4PSIzMTIiIHk9IjEzMCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjI1MiIgcng9IjE1IiBmaWxsPSIjRkZGRkZGIiAvPg0KICA8cmVjdCB4PSIxOTAiIHk9IjIyNiIgd2lkdGg9IjEzMiIgaGVpZ2h0PSI2MCIgcng9IjEwIiBmaWxsPSIjRkZGRkZGIiAvPg0KPC9zdmc+DQo=">
 
 <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1001,7 +1001,17 @@ textarea.form-input { resize: vertical; min-height: 100px; }
   position: relative;
   z-index: 1;
   border: 4px solid var(--bg2);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
 }
+
+.avatar-initials { position: relative; z-index: 2; }
 .about-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
 .about-role { font-size: 14px; color: var(--accent); font-weight: 700; margin-bottom: 16px; }
 .avail-badge {
@@ -1552,7 +1562,9 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); background: var(-
       <div class="reveal">
         <div class="glass-card" style="padding:32px;text-align:center">
           <div class="about-avatar-wrap">
-            <img src="/person.png" alt="Hammad Ali" class="about-avatar">
+            <div class="about-avatar" style="background-image: url('/person.png'), radial-gradient(circle at 30% 20%, rgba(99,102,241,0.9), rgba(34,211,238,0.85));">
+              <span class="avatar-initials">HA</span>
+            </div>
           </div>
           <div class="about-name" id="about-name"><?= htmlspecialchars($p['name']) ?></div>
           <div class="about-role"><?= htmlspecialchars($p['subtitle']) ?></div>
