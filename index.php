@@ -279,7 +279,7 @@ $logged = isset($_SESSION['admin']);
   $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
   $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
   $pageUrl = $protocol . '://' . $host . ($_SERVER['REQUEST_URI'] ?? '/');
-  $previewImage = $protocol . '://' . $host . '/person.png';
+  $previewImage = $protocol . '://' . $host . '/public/person.png';
   $siteTitle = htmlspecialchars($p['name']) . ' — World-Class Portfolio';
   $siteDescription = htmlspecialchars($p['title']) . ' based in ' . htmlspecialchars($p['location']);
 ?>
@@ -294,7 +294,7 @@ $logged = isset($_SESSION['admin']);
 <meta name="twitter:description" content="<?= $siteDescription ?>">
 <meta name="twitter:image" content="<?= htmlspecialchars($previewImage) ?>">
 <meta name="twitter:image:alt" content="<?= htmlspecialchars($p['name']) ?> profile picture">
-<link rel="icon" type="image/svg+xml" href="/gemini-svg.svg">
+<link rel="icon" type="image/svg+xml" href="/public/gemini-svg.svg">
 
 <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
