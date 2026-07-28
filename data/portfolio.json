@@ -1,0 +1,283 @@
+{
+    "personal": {
+        "name": "Hammad Ali",
+        "title": "SDO\/SDR",
+        "subtitle": "Ecommerce Executive · Amazon PPC · Digital Marketing · Lead Generation · Web Development",
+        "tagline": "Building scalable digital solutions with a sales-driven mindset.",
+        "location": "Multan, Pakistan",
+        "email": "hammadalikhan6455@gmail.com",
+        "phone": "+92303 0503 776",
+        "linkedin": "https:\/\/www.linkedin.com\/in\/hammad-ali-khan-b313692bb",
+        "bio": "Sales-driven SDO\/SDR professional with hands-on experience in lead generation, outbound prospecting, and pipeline management. Proven ability to qualify opportunities, book high-quality meetings, and support revenue growth. Strong background in Amazon PPC, TikTok Shop operations, and digital marketing, with a data-driven approach to campaign optimization. Holds a BS in Computer Science with technical knowledge in Flutter\/Dart front-end development.",
+        "stats": [
+            {
+                "label": "Ad Budget Managed",
+                "value": "$50K+\/mo"
+            },
+            {
+                "label": "ACoS Reduction",
+                "value": "40%"
+            },
+            {
+                "label": "PPC Accounts Managed",
+                "value": "15+"
+            },
+            {
+                "label": "Years Experience",
+                "value": "6+"
+            }
+        ]
+    },
+    "experience": [
+        {
+            "id": "e1",
+            "company": "WarpMill Technologies",
+            "role": "Sales Development Officer (SDO\/SDR)",
+            "period": "Sep 2025 – Present",
+            "location": "Multan, Pakistan (US Remote)",
+            "description": "Generated and qualified inbound\/outbound leads via cold calling, email outreach, and LinkedIn. Conducted discovery calls using BANT framework and scheduled meetings. Managed CRM pipelines (HubSpot, GHL, Apollo, AirTable) and supported deal progression in US Business Campaigns.",
+            "tags": [
+                "Cold Calling",
+                "HubSpot",
+                "BANT",
+                "Apollo",
+                "Lead Generation"
+            ]
+        },
+        {
+            "id": "e2",
+            "company": "LoadEdge Dispatch & Logistics",
+            "role": "Social Media Manager",
+            "period": "Jan 2026 – Present",
+            "location": "Remote",
+            "description": "Managing and growing the digital presence of LoadEdge. Developing social media strategies across LinkedIn, Facebook, and Instagram to build brand awareness and attract new carrier and shipper partnerships within the trucking and freight community.",
+            "tags": [
+                "LinkedIn",
+                "Facebook Ads",
+                "Instagram",
+                "Content Strategy",
+                "Analytics"
+            ]
+        },
+        {
+            "id": "e3",
+            "company": "Skillsrator",
+            "role": "Amazon PPC Specialist",
+            "period": "Nov 2024 – Jul 2025",
+            "location": "Punjab, Pakistan",
+            "description": "Reduced ACoS by 40% for beauty niche clients. Launched private label products generating £10K+ in first month. Managed 15+ PPC accounts across US & UK marketplaces. Tools: Helium 10, Jungle Scout, Amazon Seller Central.",
+            "tags": [
+                "Amazon PPC",
+                "SP\/SB\/SD",
+                "ACoS Optimization",
+                "Helium 10",
+                "Jungle Scout"
+            ]
+        },
+        {
+            "id": "e4",
+            "company": "Farosh (6 Figure Agency)",
+            "role": "Local E-Commerce Executive",
+            "period": "Jul 2025 – Sep 2025",
+            "location": "Multan, Pakistan",
+            "description": "Conducted product hunting and sourcing. Managed Meta Ads campaigns and creative testing. Handled order processing and confirmations.",
+            "tags": [
+                "Meta Ads",
+                "Product Sourcing",
+                "E-Commerce"
+            ]
+        },
+        {
+            "id": "e5",
+            "company": "Network Home Institute of IT (NHIIT)",
+            "role": "Front-End Android Developer",
+            "period": "Aug 2023 – Apr 2024",
+            "location": "Multan, Pakistan",
+            "description": "Designed responsive front-end software using Flutter\/Dart. Built Android applications with clean UI\/UX principles.",
+            "tags": [
+                "Flutter",
+                "Dart",
+                "Android",
+                "UI\/UX"
+            ]
+        },
+        {
+            "id": "e6",
+            "company": "TikTok Shop",
+            "role": "Virtual Assistant",
+            "period": "Oct 2024 – Jan 2025",
+            "location": "Multan, Pakistan",
+            "description": "Managed product listings, inventory, and customer support. Ran TikTok Ads campaigns and optimized product visibility.",
+            "tags": [
+                "TikTok Ads",
+                "Product Listings",
+                "E-Commerce"
+            ]
+        },
+        {
+            "id": "e7",
+            "company": "JKSM – Pepsi Cola Bottlers Multan",
+            "role": "Production Supervisor",
+            "period": "Apr 2019 – May 2024",
+            "location": "Multan, Pakistan",
+            "description": "Supervised production branch employees at one of Pakistan's largest beverage bottling operations. Built operational discipline and team management skills.",
+            "tags": [
+                "Operations",
+                "Team Leadership",
+                "Quality Control"
+            ]
+        }
+    ],
+    "projects": [
+        {
+            "id": "p1",
+            "title": "Deenhub",
+            "description": "A comprehensive Islamic content platform featuring articles, resources, and community-driven knowledge. Built for the Muslim community worldwide with a focus on authentic content and clean user experience.",
+            "url": "https:\/\/www.deenhub.info",
+            "tags": [
+                "Web Dev",
+                "Content Platform",
+                "SEO"
+            ],
+            "status": "Live",
+            "emoji": "🌙",
+            "image": "\/Public\/deenhub.png"
+        },
+        {
+            "id": "p2",
+            "title": "Aqualift Store",
+            "description": "Professional e-commerce storefront with custom product catalog, streamlined checkout, and conversion-optimized design. Integrated Meta Ads for performance marketing and measurable ROI.",
+            "url": "https:\/\/www.aqualift.store",
+            "tags": [
+                "E-Commerce",
+                "Shopify",
+                "Meta Ads",
+                "CRO"
+            ],
+            "status": "Live",
+            "emoji": "💧",
+            "image": "\/Public\/Aqualift.png"
+        },
+        {
+            "id": "p3",
+            "title": "Sulaiman Enterprises",
+            "description": "Premium construction and interior design company website with navy\/copper brand identity, scroll-triggered animations, lead capture forms, project galleries, and animated testimonials. Delivered as a full business website.",
+            "url": "#",
+            "tags": [
+                "HTML\/CSS",
+                "JavaScript",
+                "Lead Gen",
+                "Branding"
+            ],
+            "status": "Delivered",
+            "emoji": "🏗️",
+            "image": "\/Public\/Sulaiman.png"
+        },
+        {
+            "id": "p6a6807d50e91a",
+            "title": "TEST PROJECT",
+            "description": "Desc",
+            "url": "https:\/\/example.com",
+            "tags": [
+                "PHP",
+                "JS"
+            ],
+            "status": "Live",
+            "emoji": "🚀"
+        }
+    ],
+    "skills": [
+        {
+            "category": "Sales & SDR",
+            "color": "#6366F1",
+            "items": [
+                "Cold Calling",
+                "Email Outreach",
+                "Lead Qualification",
+                "BANT Framework",
+                "HubSpot",
+                "GHL",
+                "Apollo",
+                "AirTable",
+                "B2B Prospecting",
+                "Pipeline Management",
+                "Salesforce",
+                "CRM Management"
+            ]
+        },
+        {
+            "category": "Amazon & E-Commerce",
+            "color": "#F59E0B",
+            "items": [
+                "Amazon PPC",
+                "SP\/SB\/SD Campaigns",
+                "ACoS\/TACoS Optimization",
+                "Keyword Research",
+                "Helium 10",
+                "Jungle Scout",
+                "TikTok Shop",
+                "Meta Ads",
+                "Shopify",
+                "Product Sourcing"
+            ]
+        },
+        {
+            "category": "Development",
+            "color": "#22D3EE",
+            "items": [
+                "Flutter & Dart",
+                "Android Development",
+                "HTML5 & CSS3",
+                "JavaScript",
+                "PHP",
+                "MySQL",
+                "Responsive UI\/UX",
+                "State Management",
+                "Android Studio",
+                "Git"
+            ]
+        },
+        {
+            "category": "Digital Marketing",
+            "color": "#22C55E",
+            "items": [
+                "Social Media Strategy",
+                "Content Creation",
+                "SEO",
+                "LinkedIn Marketing",
+                "Facebook Ads",
+                "Analytics & Reporting",
+                "Brand Building",
+                "Copywriting"
+            ]
+        }
+    ],
+    "certifications": [
+        {
+            "name": "IT Service Management Level 4 (ITIL)",
+            "year": "2025"
+        },
+        {
+            "name": "Amazon Virtual Assistant",
+            "year": "2025"
+        },
+        {
+            "name": "Android Development",
+            "year": "2023"
+        },
+        {
+            "name": "MS Office Professional",
+            "year": "2020"
+        }
+    ],
+    "education": [
+        {
+            "degree": "BS Computer Science",
+            "institution": "GC University Faisalabad",
+            "period": "2020 – 2024",
+            "grade": "3.5 GPA",
+            "note": "Thesis: Attendroid"
+        }
+    ],
+    "publication": "Impact of Macroeconomic Indicators on Stock Market Predictions: A Cross Country Analysis — Journal of Computing & Biomedical Informatics Vol. 8 No. 01 (2024)"
+}

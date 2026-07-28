@@ -1,0 +1,20 @@
+[
+    {
+        "name": "hammad",
+        "email": "Hammad@gmail.com",
+        "message": "hey [Subject: Front-End Development]",
+        "date": "2026-07-27 19:39:05",
+        "ip": "::1",
+        "id": "ld_13723b3c0d",
+        "status": "Viewed"
+    },
+    {
+        "name": "hammad",
+        "email": "hey@gmail.com",
+        "message": "hey [Subject: Amazon PPC Management]",
+        "date": "2026-07-27 19:58:43",
+        "ip": "::1",
+        "id": "ld_b6f15c7611",
+        "status": "Contacted"
+    }
+]
