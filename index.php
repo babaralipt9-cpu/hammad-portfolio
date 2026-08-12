@@ -125,9 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $m = htmlspecialchars(trim($_POST['m']??''), ENT_QUOTES);
         if (!$n || !$e || !$m) { echo json_encode(['ok'=>false,'msg'=>'All fields required.']); exit(); }
         if (!filter_var($e, FILTER_VALIDATE_EMAIL)) { echo json_encode(['ok'=>false,'msg'=>'Invalid email.']); exit(); }
-        $lds = json_decode(file_get_contents(LDS), true);
+        $lds = json_decode(file_get_contents(LDS), true) ?: [];
         $lds[] = ['id'=>'ld_'.uniqid(),'status'=>'Pending','name'=>$n,'email'=>$e,'message'=>$m,'date'=>date('Y-m-d H:i:s'),'ip'=>$_SERVER['REMOTE_ADDR']??''];
-        file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
+        $saveResult = file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($saveResult === false) { echo json_encode(['ok'=>false,'msg'=>'Failed to save lead. Please contact support.']); exit(); }
         echo json_encode(['ok'=>true,'msg'=>"Thanks $n! I'll get back to you within 24 hours."]);
         exit();
     }
@@ -183,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($id) { foreach ($pf['experience'] as &$e) { if ($e['id']===$id){$e=$exp;break;} } }
         else      { array_unshift($pf['experience'], $exp); }
         file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        echo json_encode(['ok'=>true]); exit();
+        echo json_encode(['ok'=>true,'exp'=>$exp]); exit();
     }
 
     /* DELETE EXPERIENCE */
@@ -216,16 +217,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         echo json_encode(['ok'=>true,'msg'=>'Security settings updated.']); exit();
     }
 
-    /* GET LEADS */
+    /* GET LEADS — RETRIEVES ALL LEADS PERMANENTLY STORED */
     if ($act === 'get_leads') {
         $lds = json_decode(file_get_contents(LDS), true) ?: [];
         $changed = false;
         foreach ($lds as $idx => &$ld) {
             if (empty($ld['id'])) { $ld['id'] = 'ld_' . substr(md5(($ld['date']??'').($ld['email']??'').$idx), 0, 10); $changed = true; }
             if (empty($ld['status'])) { $ld['status'] = 'Pending'; $changed = true; }
+            if (empty($ld['date'])) { $ld['date'] = date('Y-m-d H:i:s'); $changed = true; }
         }
-        if ($changed) file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
-        echo json_encode(['ok'=>true,'leads'=>array_reverse($lds)]); exit();
+        if ($changed) file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(['ok'=>true,'leads'=>array_reverse($lds),'total'=>count($lds)]); exit();
     }
 
     /* UPDATE LEAD STATUS */
@@ -2064,6 +2066,110 @@ let isLoggedIn = <?= $logged ? 'true' : 'false' ?>;
 let portfolioData = <?= json_encode($pf, JSON_UNESCAPED_UNICODE) ?>;
 let skillsData = <?= json_encode($sk, JSON_UNESCAPED_UNICODE) ?>;
 
+function renderProjectSection() {
+  const container = document.getElementById('proj-list');
+  if (!container) return;
+  container.innerHTML = (portfolioData.projects || []).map(p => {
+    const statusClass = (p.status || '').toLowerCase() === 'delivered' ? 'delivered' : '';
+    const tagsHtml = (p.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('');
+    const actionHtml = p.url && p.url !== '#' ?
+      `<a href="${escHtml(p.url)}" target="_blank" class="btn btn-primary btn-sm">Visit Platform ↗</a>` :
+      `<span class="btn btn-ghost btn-sm" style="cursor:default">Delivered Client Site</span>`;
+    return `
+      <div class="glass-card proj-card reveal">
+        <div class="proj-thumb">
+          <div class="proj-thumb-bg">${escHtml(p.emoji || '💼')}</div>
+          <div class="proj-thumb-overlay"></div>
+          <span class="proj-thumb-icon">${escHtml(p.emoji || '💼')}</span>
+          <span class="proj-status ${statusClass}">${escHtml(p.status || 'Live')}</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-title">${escHtml(p.title)}</div>
+          <div class="proj-desc">${escHtml(p.description)}</div>
+          <div class="proj-tech">${tagsHtml}</div>
+          <div class="proj-footer">${actionHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderAdminProjectList() {
+  const container = document.getElementById('admin-proj-list');
+  if (!container) return;
+  container.innerHTML = (portfolioData.projects || []).map(p => {
+    const dataJson = JSON.stringify(p).replace(/'/g, '&#39;');
+    return `
+      <div class="admin-list-row" id="apr-${escHtml(p.id)}">
+        <div class="alr-info">
+          <div class="alr-title">${escHtml(p.emoji)} ${escHtml(p.title)}</div>
+          <div class="alr-sub">${escHtml(p.status)} · ${escHtml((p.tags || []).slice(0, 3).join(', '))}</div>
+        </div>
+        <div class="alr-actions">
+          <button class="btn btn-ghost btn-sm" onclick='editProject(${dataJson})'>✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="delProject('${escHtml(p.id)}')">🗑️ Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderExperienceSection() {
+  const container = document.getElementById('exp-list');
+  if (!container) return;
+  container.innerHTML = (portfolioData.experience || []).map(e => {
+    const tagsHtml = (e.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('');
+    return `
+      <div class="glass-card exp-card reveal" data-id="${escHtml(e.id)}">
+        <div class="exp-header">
+          <div>
+            <div class="exp-company">${escHtml(e.company)}</div>
+            <div class="exp-role">${escHtml(e.role)}</div>
+          </div>
+          <div>
+            <div class="exp-period">${escHtml(e.period)}</div>
+            <div class="exp-location">${escHtml(e.location)}</div>
+          </div>
+        </div>
+        <div class="exp-desc">${escHtml(e.description)}</div>
+        <div class="exp-tags">${tagsHtml}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderAdminExperienceList() {
+  const container = document.getElementById('admin-exp-list');
+  if (!container) return;
+  container.innerHTML = (portfolioData.experience || []).map(e => {
+    const dataJson = JSON.stringify(e).replace(/'/g, '&#39;');
+    return `
+      <div class="admin-list-row" id="aer-${escHtml(e.id)}">
+        <div class="alr-info">
+          <div class="alr-title">${escHtml(e.company)}</div>
+          <div class="alr-sub">${escHtml(e.role)} · ${escHtml(e.period)}</div>
+        </div>
+        <div class="alr-actions">
+          <button class="btn btn-ghost btn-sm" onclick='editExp(${dataJson})'>✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="delExp('${escHtml(e.id)}')">🗑️ Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderSkillsSectionUI() {
+  const container = document.getElementById('skills-list');
+  if (!container) return;
+  container.innerHTML = (portfolioData.skills || []).map(sg => {
+    const c = sg.color || '#6366F1';
+    const rgb = /^#?([a-f0-9]{6})$/i.exec(c);
+    const [r, g, b] = rgb ? [parseInt(rgb[1].slice(0, 2), 16), parseInt(rgb[1].slice(2, 4), 16), parseInt(rgb[1].slice(4, 6), 16)] : [99, 102, 241];
+    const chips = (sg.items || []).map(item => `<span class="skill-chip" style="background:rgba(${r},${g},${b},.12);border:1px solid rgba(${r},${g},${b},.25);color:${escHtml(c)}">${escHtml(item)}</span>`).join('');
+    return `
+      <div class="glass-card skill-group reveal">
+        <div class="skill-cat" style="color:${escHtml(c)}">${escHtml(sg.category)}</div>
+        <div class="skill-chips">${chips}</div>
+      </div>`;
+  }).join('');
+}
+
 /* ── Theme Switcher ──────────────────────────────────── */
 const html       = document.documentElement;
 const themeBtn   = document.getElementById('theme-btn');
@@ -2360,6 +2466,7 @@ function showDashboard() {
   document.getElementById('admin-reset').style.display = 'none';
   document.getElementById('admin-dashboard').style.display = 'block';
   initSkillsEditor();
+  loadLeads();
 }
 
 function showMsg(id, msg, type = 'error') {
@@ -2372,7 +2479,6 @@ function showMsg(id, msg, type = 'error') {
 
 function adminSaved(id, msg) {
   showMsg(id, msg, 'success');
-  setTimeout(() => location.reload(), 900);
 }
 
 /* ── Login Logic ─────────────────────────────────────── */
@@ -2448,6 +2554,7 @@ async function savePersonal() {
       if (aboutName) aboutName.textContent = name;
       if (aboutBio) aboutBio.innerHTML = escHtml(bio).replace(/\n/g, '<br>');
       adminSaved('personal-msg', '✅ Details saved successfully!');
+      setTimeout(() => location.reload(), 700);
     } else showMsg('personal-msg', j.msg || 'Error saving.');
   } catch { showMsg('personal-msg', 'Network error.'); }
 }
@@ -2471,13 +2578,32 @@ function editProject(d) { openProjForm(d); }
 async function saveProject() {
   const fd = new FormData();
   fd.append('action', 'save_project');
-  ['id','title','emoji','description','url','status','tags'].forEach(f => {
-    fd.append(f, document.getElementById('pf-' + f).value);
+  const projectFields = [
+    ['id', 'pf-id'],
+    ['title', 'pf-title'],
+    ['emoji', 'pf-emoji'],
+    ['description', 'pf-desc'],
+    ['url', 'pf-url'],
+    ['status', 'pf-status'],
+    ['tags', 'pf-tags']
+  ];
+  projectFields.forEach(([key, elementId]) => {
+    fd.append(key, document.getElementById(elementId).value);
   });
   try {
     const r = await fetch('', { method: 'POST', body: fd });
     const j = await r.json();
     if (j.ok) {
+      const proj = j.proj;
+      const id = document.getElementById('pf-id').value.trim();
+      if (id) {
+        const idx = portfolioData.projects.findIndex(item => item.id === proj.id);
+        if (idx !== -1) portfolioData.projects[idx] = proj;
+      } else {
+        portfolioData.projects.push(proj);
+      }
+      renderProjectSection();
+      renderAdminProjectList();
       closeProjForm();
       adminSaved('proj-msg', '✅ Project saved!');
     } else showMsg('proj-msg', j.msg || 'Error saving project.');
@@ -2511,12 +2637,41 @@ function editExp(d) { openExpForm(d); }
 
 async function saveExp() {
   const fd = new FormData(); fd.append('action', 'save_exp');
-  ['id','company','role','period','location','description','tags'].forEach(f => fd.append(f, document.getElementById('ef-' + f).value));
+  const expFields = [
+    ['id', 'ef-id'],
+    ['company', 'ef-company'],
+    ['role', 'ef-role'],
+    ['period', 'ef-period'],
+    ['location', 'ef-location'],
+    ['description', 'ef-desc'],
+    ['tags', 'ef-tags']
+  ];
+  expFields.forEach(([key, elementId]) => fd.append(key, document.getElementById(elementId).value));
   try {
     const r = await fetch('', { method: 'POST', body: fd });
     const j = await r.json();
-    if (j.ok) { closeExpForm(); adminSaved('exp-msg', '✅ Experience entry saved!'); }
-    else showMsg('exp-msg', j.msg || 'Error.');
+    if (j.ok) {
+      const exp = j.exp || {
+        id: document.getElementById('ef-id').value.trim() || ('exp_' + Math.random().toString(36).slice(2)),
+        company: document.getElementById('ef-company').value.trim(),
+        role: document.getElementById('ef-role').value.trim(),
+        period: document.getElementById('ef-period').value.trim(),
+        location: document.getElementById('ef-location').value.trim(),
+        description: document.getElementById('ef-desc').value.trim(),
+        tags: document.getElementById('ef-tags').value.split(',').map(t => t.trim()).filter(Boolean)
+      };
+      const id = document.getElementById('ef-id').value.trim();
+      if (id) {
+        const idx = portfolioData.experience.findIndex(item => item.id === exp.id);
+        if (idx !== -1) portfolioData.experience[idx] = exp;
+      } else {
+        portfolioData.experience.unshift(exp);
+      }
+      renderExperienceSection();
+      renderAdminExperienceList();
+      closeExpForm();
+      adminSaved('exp-msg', '✅ Experience entry saved!');
+    } else showMsg('exp-msg', j.msg || 'Error.');
   } catch { showMsg('exp-msg', 'Network error.'); }
 }
 
@@ -2582,8 +2737,11 @@ async function saveSkills() {
   try {
     const r = await fetch('', { method: 'POST', body: fd });
     const j = await r.json();
-    if (j.ok) { adminSaved('skills-msg', '✅ Skills saved successfully!'); }
-    else showMsg('skills-msg', j.msg || 'Error.');
+    if (j.ok) {
+      portfolioData.skills = skillsData;
+      renderSkillsSectionUI();
+      adminSaved('skills-msg', '✅ Skills saved successfully!');
+    } else showMsg('skills-msg', j.msg || 'Error.');
   } catch { showMsg('skills-msg', 'Network error.'); }
 }
 

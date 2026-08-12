@@ -174,16 +174,18 @@
             "image": "\/Public\/Sulaiman.png"
         },
         {
-            "id": "p6a6807d50e91a",
-            "title": "TEST PROJECT",
-            "description": "Desc",
-            "url": "https:\/\/example.com",
+            "id": "p6a7ca3e1ab0ce",
+            "title": "Attendroid",
+            "description": "Manual paper roll calls are slow, prone to errors, and leave parents in the dark about their child&#039;s daily presence. So, I developed ATTENDROID—a modern, cross-platform mobile solution built to digitize and simplify attendance management across schools and universities.  \r\nKey Features &amp; Impact:\r\n* 4-in-1 Role Architecture: Designed dedicated, tailored interfaces for Admins, Teachers, Students, and Parents.  \r\n* Instant Attendance Marking: Enables teachers to record and update class attendance in seconds directly from their Android smartphones.  \r\n* Real-Time Transparency: Gives students and parents immediate access to daily, weekly, and monthly attendance records to foster accountability and active engagement. \r\n* Admin Control Center: Allows administrators to manage courses, departments, academic sessions, and user roles seamlessly.  \r\n* Reliability &amp; Security: Fully tested using Black-Box (BVA, ECP) and White-Box (Statement Coverage) testing methods to guarantee data integrity and smooth user navigation.  \r\nTech Stack Used:\r\n📱 Frontend: Flutter \/ Dart (Responsive Mobile UI)  \r\n⚙️ Backend: PHP &amp; XAMPP Server  \r\n🗄️ Database: MySQL",
+            "url": "",
             "tags": [
+                "Flutter",
+                "Dart",
                 "PHP",
-                "JS"
+                "MySQL"
             ],
-            "status": "Live",
-            "emoji": "🚀"
+            "status": "Delivered",
+            "emoji": "🙋"
         }
     ],
     "skills": [
@@ -281,4 +283,3 @@
     ],
     "publication": "Impact of Macroeconomic Indicators on Stock Market Predictions: A Cross Country Analysis — Journal of Computing & Biomedical Informatics Vol. 8 No. 01 (2024)"
 }
-
