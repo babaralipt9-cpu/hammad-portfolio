@@ -83,6 +83,7 @@ if (!file_exists(LDS)) file_put_contents(LDS, '[]');
 /* ── Firebase Helper Functions ────────────────────────── */
 function loadEnv() {
     $env = [];
+    // First, try to load from .env.local (local development)
     if (file_exists(__DIR__ . '/.env.local')) {
         $lines = file(__DIR__ . '/.env.local', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
@@ -92,25 +93,31 @@ function loadEnv() {
             }
         }
     }
+    // Then, fallback to system environment variables (Vercel)
+    $env['FIREBASE_DATABASE_URL'] = $env['FIREBASE_DATABASE_URL'] ?? ($_ENV['FIREBASE_DATABASE_URL'] ?? $_SERVER['FIREBASE_DATABASE_URL'] ?? '');
+    $env['FIREBASE_API_KEY'] = $env['FIREBASE_API_KEY'] ?? ($_ENV['FIREBASE_API_KEY'] ?? $_SERVER['FIREBASE_API_KEY'] ?? '');
+    $env['FIREBASE_ENABLED'] = $env['FIREBASE_ENABLED'] ?? ($_ENV['FIREBASE_ENABLED'] ?? $_SERVER['FIREBASE_ENABLED'] ?? 'false');
     return $env;
 }
 
 $env = loadEnv();
-$firebase_enabled = ($env['FIREBASE_ENABLED'] ?? 'false') === 'true';
+$firebase_enabled = ($env['FIREBASE_ENABLED'] === 'true' || $env['FIREBASE_ENABLED'] === true) && !empty($env['FIREBASE_DATABASE_URL']) && !empty($env['FIREBASE_API_KEY']);
 $firebase_url = $env['FIREBASE_DATABASE_URL'] ?? '';
 $firebase_api_key = $env['FIREBASE_API_KEY'] ?? '';
 
 function firebaseGet($path, $env) {
-    if (!$env['FIREBASE_ENABLED'] || $env['FIREBASE_ENABLED'] !== 'true') return null;
-    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . $env['FIREBASE_API_KEY'];
+    if (!isset($env['FIREBASE_ENABLED']) || ($env['FIREBASE_ENABLED'] !== 'true' && $env['FIREBASE_ENABLED'] !== true)) return null;
+    if (empty($env['FIREBASE_DATABASE_URL']) || empty($env['FIREBASE_API_KEY'])) return null;
+    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . urlencode($env['FIREBASE_API_KEY']);
     $ctx = stream_context_create(['http' => ['timeout' => 5]]);
     $response = @file_get_contents($url, false, $ctx);
     return $response ? json_decode($response, true) : null;
 }
 
 function firebasePut($path, $data, $env) {
-    if (!$env['FIREBASE_ENABLED'] || $env['FIREBASE_ENABLED'] !== 'true') return false;
-    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . $env['FIREBASE_API_KEY'];
+    if (!isset($env['FIREBASE_ENABLED']) || ($env['FIREBASE_ENABLED'] !== 'true' && $env['FIREBASE_ENABLED'] !== true)) return false;
+    if (empty($env['FIREBASE_DATABASE_URL']) || empty($env['FIREBASE_API_KEY'])) return false;
+    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . urlencode($env['FIREBASE_API_KEY']);
     $opts = ['http' => [
         'method'  => 'PUT',
         'header'  => "Content-type: application/json\r\n",
@@ -366,7 +373,9 @@ $logged = isset($_SESSION['admin']);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= htmlspecialchars($p['name']) ?> — World-Class Portfolio</title>
-<meta name="description" content="<?= htmlspecialchars($p['title']) ?> based in <?= htmlspecialchars($p['location']) ?>">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-weight='bold' fill='%236366F1'>H</text></svg>">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-weight='bold' fill='%236366F1'>H</text></svg>">
+<meta name="description" content="<?= htmlspecialchars($p['title']) ?> based in <?= htmlspecialchars($p['location']) ?>">>
 <?php
   $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
   $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
