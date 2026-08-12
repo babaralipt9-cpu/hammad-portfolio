@@ -80,8 +80,67 @@ if (!file_exists(PF)) {
 
 if (!file_exists(LDS)) file_put_contents(LDS, '[]');
 
-$adm = json_decode(file_get_contents(ADM), true);
-$pf  = json_decode(file_get_contents(PF), true);
+/* ── Firebase Helper Functions ────────────────────────── */
+function loadEnv() {
+    $env = [];
+    if (file_exists(__DIR__ . '/.env.local')) {
+        $lines = file(__DIR__ . '/.env.local', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+                [$key, $val] = explode('=', $line, 2);
+                $env[trim($key)] = trim($val, '"');
+            }
+        }
+    }
+    return $env;
+}
+
+$env = loadEnv();
+$firebase_enabled = ($env['FIREBASE_ENABLED'] ?? 'false') === 'true';
+$firebase_url = $env['FIREBASE_DATABASE_URL'] ?? '';
+$firebase_api_key = $env['FIREBASE_API_KEY'] ?? '';
+
+function firebaseGet($path, $env) {
+    if (!$env['FIREBASE_ENABLED'] || $env['FIREBASE_ENABLED'] !== 'true') return null;
+    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . $env['FIREBASE_API_KEY'];
+    $ctx = stream_context_create(['http' => ['timeout' => 5]]);
+    $response = @file_get_contents($url, false, $ctx);
+    return $response ? json_decode($response, true) : null;
+}
+
+function firebasePut($path, $data, $env) {
+    if (!$env['FIREBASE_ENABLED'] || $env['FIREBASE_ENABLED'] !== 'true') return false;
+    $url = rtrim($env['FIREBASE_DATABASE_URL'], '/') . "/{$path}.json?auth=" . $env['FIREBASE_API_KEY'];
+    $opts = ['http' => [
+        'method'  => 'PUT',
+        'header'  => "Content-type: application/json\r\n",
+        'content' => json_encode($data, JSON_UNESCAPED_UNICODE),
+        'timeout' => 10
+    ]];
+    $ctx = stream_context_create($opts);
+    return @file_get_contents($url, false, $ctx) !== false;
+}
+
+function loadPortfolioData($env, $fallbackFile) {
+    $data = firebaseGet('portfolio', $env);
+    if ($data === null) $data = json_decode(file_get_contents($fallbackFile), true);
+    return $data ?: [];
+}
+
+function loadAdminData($env, $fallbackFile) {
+    $data = firebaseGet('admin', $env);
+    if ($data === null) $data = json_decode(file_get_contents($fallbackFile), true);
+    return $data ?: [];
+}
+
+function loadLeadsData($env, $fallbackFile) {
+    $data = firebaseGet('leads', $env);
+    if ($data === null) $data = json_decode(file_get_contents($fallbackFile), true);
+    return $data ?: [];
+}
+
+$adm = loadAdminData($env, ADM);
+$pf  = loadPortfolioData($env, PF);
 
 /* ══════════════════════════════════════════════════════════
    API HANDLER
@@ -125,9 +184,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $m = htmlspecialchars(trim($_POST['m']??''), ENT_QUOTES);
         if (!$n || !$e || !$m) { echo json_encode(['ok'=>false,'msg'=>'All fields required.']); exit(); }
         if (!filter_var($e, FILTER_VALIDATE_EMAIL)) { echo json_encode(['ok'=>false,'msg'=>'Invalid email.']); exit(); }
-        $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        if ($firebase_enabled) {
+            $lds = firebaseGet('leads', $env) ?: [];
+        } else {
+            $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        }
         $lds[] = ['id'=>'ld_'.uniqid(),'status'=>'Pending','name'=>$n,'email'=>$e,'message'=>$m,'date'=>date('Y-m-d H:i:s'),'ip'=>$_SERVER['REMOTE_ADDR']??''];
-        $saveResult = file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) {
+            $saveResult = firebasePut('leads', $lds, $env);
+        } else {
+            $saveResult = file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) !== false;
+        }
         if ($saveResult === false) { echo json_encode(['ok'=>false,'msg'=>'Failed to save lead. Please contact support.']); exit(); }
         echo json_encode(['ok'=>true,'msg'=>"Thanks $n! I'll get back to you within 24 hours."]);
         exit();
@@ -140,7 +207,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($act === 'save_personal') {
         foreach (['name','title','subtitle','tagline','location','email','phone','linkedin','bio'] as $f)
             $pf['personal'][$f] = htmlspecialchars(trim($_POST[$f]??''), ENT_QUOTES);
-        file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) firebasePut('portfolio', $pf, $env);
+        else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(['ok'=>true]); exit();
     }
 
@@ -158,14 +226,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         ];
         if ($id) { foreach ($pf['projects'] as &$p) { if ($p['id']===$id){$p=$proj;break;} } }
         else      { $pf['projects'][] = $proj; }
-        file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) firebasePut('portfolio', $pf, $env);
+        else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(['ok'=>true,'proj'=>$proj]); exit();
     }
 
     /* DELETE PROJECT */
     if ($act === 'del_project') {
         $pf['projects'] = array_values(array_filter($pf['projects'], fn($p)=>$p['id']!==trim($_POST['id']??'')));
-        file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) firebasePut('portfolio', $pf, $env);
+        else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(['ok'=>true]); exit();
     }
 
@@ -183,21 +253,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         ];
         if ($id) { foreach ($pf['experience'] as &$e) { if ($e['id']===$id){$e=$exp;break;} } }
         else      { array_unshift($pf['experience'], $exp); }
-        file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) firebasePut('portfolio', $pf, $env);
+        else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(['ok'=>true,'exp'=>$exp]); exit();
     }
 
     /* DELETE EXPERIENCE */
     if ($act === 'del_exp') {
         $pf['experience'] = array_values(array_filter($pf['experience'], fn($e)=>$e['id']!==trim($_POST['id']??'')));
-        file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($firebase_enabled) firebasePut('portfolio', $pf, $env);
+        else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(['ok'=>true]); exit();
     }
 
     /* SAVE SKILLS JSON */
     if ($act === 'save_skills') {
         $sk = json_decode($_POST['json']??'[]', true);
-        if (is_array($sk)) { $pf['skills']=$sk; file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)); echo json_encode(['ok'=>true]); }
+        if (is_array($sk)) { $pf['skills']=$sk; if ($firebase_enabled) firebasePut('portfolio', $pf, $env); else file_put_contents(PF, json_encode($pf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)); echo json_encode(['ok'=>true]); }
         else echo json_encode(['ok'=>false,'msg'=>'Bad data']);
         exit();
     }
@@ -213,20 +285,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $adm['password'] = password_hash(trim($_POST['np']), PASSWORD_BCRYPT, ['cost'=>10]);
         }
         if (!empty($_POST['nk'])) $adm['recovery_key_hash'] = hash('sha256', trim($_POST['nk']));
-        file_put_contents(ADM, json_encode($adm, JSON_PRETTY_PRINT));
+        if ($firebase_enabled) firebasePut('admin', $adm, $env);
+        else file_put_contents(ADM, json_encode($adm, JSON_PRETTY_PRINT));
         echo json_encode(['ok'=>true,'msg'=>'Security settings updated.']); exit();
     }
 
     /* GET LEADS — RETRIEVES ALL LEADS PERMANENTLY STORED */
     if ($act === 'get_leads') {
-        $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        if ($firebase_enabled) {
+            $lds = firebaseGet('leads', $env) ?: [];
+        } else {
+            $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        }
         $changed = false;
         foreach ($lds as $idx => &$ld) {
             if (empty($ld['id'])) { $ld['id'] = 'ld_' . substr(md5(($ld['date']??'').($ld['email']??'').$idx), 0, 10); $changed = true; }
             if (empty($ld['status'])) { $ld['status'] = 'Pending'; $changed = true; }
             if (empty($ld['date'])) { $ld['date'] = date('Y-m-d H:i:s'); $changed = true; }
         }
-        if ($changed) file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if ($changed) {
+            if ($firebase_enabled) firebasePut('leads', $lds, $env);
+            else file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
         echo json_encode(['ok'=>true,'leads'=>array_reverse($lds),'total'=>count($lds)]); exit();
     }
 
@@ -235,13 +315,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $id = trim($_POST['id']??'');
         $st = trim($_POST['status']??'Pending');
         if (!in_array($st, ['Pending','Viewed','Contacted'])) { echo json_encode(['ok'=>false,'msg'=>'Invalid status']); exit(); }
-        $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        if ($firebase_enabled) {
+            $lds = firebaseGet('leads', $env) ?: [];
+        } else {
+            $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        }
         $found = false;
         foreach ($lds as &$ld) {
             if (($ld['id'] ?? '') === $id) { $ld['status'] = $st; $found = true; break; }
         }
         if ($found) {
-            file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
+            if ($firebase_enabled) firebasePut('leads', $lds, $env);
+            else file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
             echo json_encode(['ok'=>true]);
         } else {
             echo json_encode(['ok'=>false,'msg'=>'Lead not found']);
@@ -252,9 +337,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     /* DELETE LEAD */
     if ($act === 'del_lead') {
         $id = trim($_POST['id']??'');
-        $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        if ($firebase_enabled) {
+            $lds = firebaseGet('leads', $env) ?: [];
+        } else {
+            $lds = json_decode(file_get_contents(LDS), true) ?: [];
+        }
         $lds = array_values(array_filter($lds, fn($l)=>($l['id']??'') !== $id));
-        file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
+        if ($firebase_enabled) firebasePut('leads', $lds, $env);
+        else file_put_contents(LDS, json_encode($lds, JSON_PRETTY_PRINT));
         echo json_encode(['ok'=>true]); exit();
     }
 
